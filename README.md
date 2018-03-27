@@ -19,8 +19,10 @@ Available Commands:
 Flags:
   -h, --help   help for nlab
 
-Use "nlab [command] --help" for more information about a command.```
+Use "nlab [command] --help" for more information about a command.
+```
 
 ```nlab network create lab.yml
 nlab run lab.yml
-nlab network destroy lab.yml```
+nlab network destroy lab.yml
+```
