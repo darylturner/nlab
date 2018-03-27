@@ -57,7 +57,7 @@ var runCmd = &cobra.Command{
 				}
 
 				if node.Network.Management == true {
-					tapName := fmt.Sprintf("%s_mng0", node.Tag)
+					tapName := fmt.Sprintf("mng%s", node.Tag)
 					qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName)...)
 				}
 				for _, link := range node.Network.Links {

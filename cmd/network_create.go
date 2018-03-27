@@ -49,7 +49,7 @@ var createCmd = &cobra.Command{
 		for _, node := range cfg.Nodes {
 			if node.Network.Management == true {
 				mngBridge := cfg.ManagementBridge
-				tapName := fmt.Sprintf("%s_mng0", node.Tag)
+				tapName := fmt.Sprintf("mng%s", node.Tag)
 				if err := createTap(tapName, mngBridge); err != nil {
 					log.WithFields(log.Fields{
 						"error":  err,
