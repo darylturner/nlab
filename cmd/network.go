@@ -29,7 +29,7 @@ func fixedLengthTap(link, node string) string {
 	hash.Write([]byte(link))
 	hash.Write([]byte(node))
 
-	return fmt.Sprintf("%.5x_tap0", hash.Sum(nil))
+	return fmt.Sprintf("veth%.5x", hash.Sum(nil))
 }
 
 // networkCmd represents the network command
