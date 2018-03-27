@@ -71,12 +71,13 @@ var runCmd = &cobra.Command{
 						log.WithFields(log.Fields{
 							"tag":   node.Tag,
 							"error": err,
-						}).Info("error starting node")
+						}).Error("error starting node")
+					} else {
+						log.WithFields(log.Fields{
+							"tag":    node.Tag,
+							"serial": fmt.Sprintf("telnet://localhost:%v", telnetPort),
+						}).Info("running")
 					}
-					log.WithFields(log.Fields{
-						"tag":    node.Tag,
-						"serial": fmt.Sprintf("telnet://localhost:%v", telnetPort),
-					}).Info("running")
 				} else {
 					fmt.Println("kvm " + strings.Join(qemuArgs, " "))
 				}
