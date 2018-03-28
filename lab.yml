@@ -1,20 +1,57 @@
 management_bridge: man0
 nodes:
-    - tag: rtr-1
-      network:
-          management: true
-          links:
-              - rtr1-rtr2
-              - rtr1-rr1
-              - sw1-rtr1
-      resources:
-          cpu: 2
-          mem: 512
-          cdrom: /home/daryl/veos.iso
-          disk:
-              file: /dev/zvol/rdsk/rpool/vmdisks/vsrx-1
-              format: raw
+        - tag: rtr1
+          network:
+                  management: true
+                  links:
+                        - rtr1-rtr2
+                        - rtr1-sw1
+                        - rtr1-sw2
+          resources:
+                  cpu: 2
+                  mem: 512
+                  cdrom: null
+                  disk: { file: /dev/zvol/tank/vmdisks/vsrx-1, format: raw }
+        - tag: rtr2
+          network:
+                  management: true
+                  links:
+                        - rtr1-rtr2
+                        - rtr2-sw1
+                        - rtr2-sw2
+          resources:
+                  cpu: 2
+                  mem: 1024
+                  cdrom: null
+                  disk: { file: /home/daryl/vqfx10k-re.qcow, format: qcow }
+        - tag: sw1
+          network:
+                  management: true
+                  links:
+                        - rtr1-sw1
+                        - rtr2-sw2
+                        - sw1-sw2
+          resources:
+                  cpu: 1
+                  mem: 2048
+                  cdrom: null
+                  disk: { file: /dev/zvol/tank/vmdisks/nxos-1, format: raw }
+        - tag: sw2
+          network:
+                  management: true
+                  links: 
+                        - rtr1-sw2
+                        - rtr2-sw2
+                        - sw1-sw2
+          resources:
+                  cpu: 1
+                  mem: 512
+                  cdrom: null
+                  disk: { file: /dev/zvol/tank/vmdisks/vios-1, format: raw }
 links:
-    - tag: rtr1-rtr2
-    - tag: rtr1-rr1
-    - tag: sw1-rtr1
+        - tag: rtr1-rtr2
+        - tag: rtr1-sw1
+        - tag: rtr1-sw2
+        - tag: rtr2-sw1
+        - tag: rtr2-sw2
+        - tag: sw1-sw2
