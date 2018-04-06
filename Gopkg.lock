@@ -32,8 +32,8 @@
 [[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
-  version = "v0.0.1"
+  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
+  version = "v0.0.2"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -56,15 +56,9 @@
   ]
   revision = "91ee8cde435411ca3f1cd365e8f20131aed4d0a1"
 
-[[projects]]
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  revision = "86f5ed62f8a0ee96bd888d2efdfd6d4fb100a4eb"
-  version = "v2.2.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "24cc5e3d3ac7754451c6e4f7555d5189c2fb7a8bd9788464e666fd91647ece92"
+  inputs-digest = "e9eb070fac35a704bac7016021e7c106f7ce183e4783031b3f6dc03b8ad8f7cd"
   solver-name = "gps-cdcl"
   solver-version = 1
