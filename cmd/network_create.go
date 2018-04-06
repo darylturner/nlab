@@ -37,10 +37,10 @@ var createCmd = &cobra.Command{
 
 		// create bridges for each segment
 		for _, br := range cfg.Links {
-			if err := createBridge(br.Tag); err != nil {
+			if err := createBridge(br); err != nil {
 				log.WithFields(log.Fields{
 					"error":  err,
-					"bridge": br.Tag,
+					"bridge": br,
 				}).Error("error creating bridge")
 			}
 		}
