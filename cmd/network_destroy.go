@@ -37,10 +37,10 @@ var destroyCmd = &cobra.Command{
 
 		// destroy bridges for each segment
 		for _, br := range cfg.Links {
-			if err := destroyBridge(br.Tag); err != nil {
+			if err := destroyBridge(br); err != nil {
 				log.WithFields(log.Fields{
 					"error":  err,
-					"bridge": br.Tag,
+					"bridge": br,
 				}).Error("error destroying bridge")
 			}
 		}

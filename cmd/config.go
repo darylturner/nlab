@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"gopkg.in/yaml.v2"
+	"github.com/hashicorp/hcl"
 	"io/ioutil"
 	"os"
 )
@@ -20,40 +20,36 @@ func parseConfig(cfgFile string) (*Topology, error) {
 		return &config, err
 	}
 
-	err = yaml.Unmarshal(cfgData, &config)
+	err = hcl.Unmarshal(cfgData, &config)
 	return &config, err
 }
 
 type Topology struct {
-	Tag              string `yaml:"tag""`
-	Nodes            []Node `yaml:"nodes"`
-	Links            []Link `yaml:"links"`
-	ManagementBridge string `yaml:"management_bridge"`
+	Tag              string     `hcl:"tag"`
+	Nodes            []NodeConf `hcl:"node"`
+	Links            []string   `hcl:"link_tags"`
+	ManagementBridge string     `hcl:"management_bridge"`
 }
 
-type Node struct {
-	Tag       string       `yaml:"tag"`
-	Network   NetworkConf  `yaml:"network"`
-	Resources ResourceConf `yaml:"resources"`
+type NodeConf struct {
+	Tag       string       `hcl:",key"`
+	Resources ResourceConf `hcl:"resources"`
+	Network   NetworkConf  `hcl:"network"`
 }
 
 type NetworkConf struct {
-	Management bool     `yaml:"management"`
-	Links      []string `yaml:"links"`
+	Management bool     `hcl:"management"`
+	Links      []string `hcl:"links"`
 }
 
 type ResourceConf struct {
-	CPU    string   `yaml:"cpu"`
-	Memory string   `yaml:"mem"`
-	Disk   DiskConf `yaml:"disk"`
-	CDROM  string   `yaml:"cdrom"`
+	CPU    string     `hcl:"cpu"`
+	Memory string     `hcl:"mem"`
+	Disks  []DiskConf `hcl:"disk"`
+	CDROM  string     `hcl:"cdrom"`
 }
 
 type DiskConf struct {
-	File   string `yaml:"file"`
-	Format string `yaml:"format"`
-}
-
-type Link struct {
-	Tag string `yaml:"tag"`
+	File   string `hcl:",key"`
+	Format string `hcl:"format"`
 }

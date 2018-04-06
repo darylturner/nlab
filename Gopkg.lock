@@ -2,6 +2,22 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
+  revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -49,6 +65,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "541980a37d5e37d1b1a90013a8415af7a527d0dd527b0d4c6eb687c3be68fd7d"
+  inputs-digest = "24cc5e3d3ac7754451c6e4f7555d5189c2fb7a8bd9788464e666fd91647ece92"
   solver-name = "gps-cdcl"
   solver-version = 1
