@@ -43,10 +43,10 @@ type NetworkConf struct {
 }
 
 type ResourceConf struct {
-	CPU    string   `yaml:"cpu"`
-	Memory string   `yaml:"mem"`
-	Disk   DiskConf `yaml:"disk"`
-	CDROM  string   `yaml:"cdrom"`
+	CPU    string     `yaml:"cpu"`
+	Memory string     `yaml:"mem"`
+	Disks  []DiskConf `yaml:"disks"`
+	CDROM  string     `yaml:"cdrom"`
 }
 
 type DiskConf struct {

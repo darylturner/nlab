@@ -56,8 +56,12 @@ var runCmd = &cobra.Command{
 					"-smp", node.Resources.CPU,
 					"-pidfile", fmt.Sprintf("/var/run/nlab/%v/%v.pid", cfg.Tag, node.Tag),
 					"-m", node.Resources.Memory,
-					"-drive", fmt.Sprintf("format=%v,file=%v", node.Resources.Disk.Format, node.Resources.Disk.File),
 					"-display", "none", "-serial", fmt.Sprintf("telnet::%v,nowait,server", telnetPort),
+				}
+
+				for _, disk := range node.Resources.Disks {
+					cmd := []string{"-drive", fmt.Sprintf("format=%v,file=%v", disk.Format, disk.File)}
+					qemuArgs = append(qemuArgs, cmd...)
 				}
 
 				if node.Resources.CDROM != "" {
