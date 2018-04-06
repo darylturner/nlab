@@ -47,6 +47,7 @@ var runCmd = &cobra.Command{
 				qemuArgs := []string{
 					"-name", node.Tag, "-daemonize",
 					"-smp", node.Resources.CPU,
+					"-pidfile", fmt.Sprintf("/var/run/nlab/%v/%v.pid", cfg.Tag, node.Tag),
 					"-m", node.Resources.Memory,
 					"-drive", fmt.Sprintf("format=%v,file=%v", node.Resources.Disk.Format, node.Resources.Disk.File),
 					"-display", "none", "-serial", fmt.Sprintf("telnet::%v,nowait,server", telnetPort),

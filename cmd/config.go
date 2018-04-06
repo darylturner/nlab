@@ -25,6 +25,7 @@ func parseConfig(cfgFile string) (*Topology, error) {
 }
 
 type Topology struct {
+	Tag              string `yaml:"lab_tag""`
 	Nodes            []Node `yaml:"nodes"`
 	Links            []Link `yaml:"links"`
 	ManagementBridge string `yaml:"management_bridge"`
