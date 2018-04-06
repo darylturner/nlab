@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -36,6 +37,12 @@ var runCmd = &cobra.Command{
 				"config": args[0],
 				"error":  err,
 			}).Fatal("error parsing configuration")
+		}
+
+		if err := os.MkdirAll(fmt.Sprintf("/var/run/nlab/%v", cfg.Tag), os.ModePerm); err != nil {
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Fatal("unable to create pid dir")
 		}
 
 		serialPortBase := 50000 // need to make this more dynamic
