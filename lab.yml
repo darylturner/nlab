@@ -1,4 +1,5 @@
 management_bridge: man0
+tag: example-lab
 nodes:
         - tag: rtr1
           network:
