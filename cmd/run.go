@@ -68,13 +68,14 @@ var runCmd = &cobra.Command{
 					qemuArgs = append(qemuArgs, "-cdrom "+node.Resources.CDROM)
 				}
 
+				virtIO := node.Network.VirtIO // virtio support specified?
 				if node.Network.Management == true {
 					tapName := fmt.Sprintf("mng%s", node.Tag)
-					qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName)...)
+					qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName, virtIO)...)
 				}
 				for _, link := range node.Network.Links {
 					tapName := fixedLengthTap(link, node.Tag)
-					qemuArgs = append(qemuArgs, linkCmd(link, tapName)...)
+					qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
 				}
 
 				dryRun := cmd.Flag("no-launch").Value.String()
@@ -105,9 +106,13 @@ func init() {
 	runCmd.Flags().StringP("tag", "t", "", "Launch only virtual machine matching tag.")
 }
 
-func linkCmd(link, tap string) []string {
+func linkCmd(link, tap string, virtio bool) []string {
+	drv := "e1000"
+	if virtio {
+		drv = "virtio-net-pci"
+	}
 	return []string{
-		"-device", fmt.Sprintf("e1000,netdev=%s,mac=%s", link, generateMAC()),
+		"-device", fmt.Sprintf("%v,netdev=%s,mac=%s", drv, link, generateMAC()),
 		"-netdev", fmt.Sprintf("tap,id=%s,ifname=%s,script=no", link, tap),
 	}
 }

@@ -5,6 +5,7 @@ tag = "example-lab"
 node "rtr1" {
   network {
     management = true
+    virtio     = true
     links      = ["rtr1-rtr2", "rtr1-sw1", "rtr1-sw2"]
   }
 
@@ -25,6 +26,7 @@ node "rtr1" {
 node "rtr2" {
   network {
     management = true
+    virtio     = false
     links      = ["rtr1-rtr2", "rtr1-sw1", "rtr1-sw2"]
   }
 

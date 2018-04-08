@@ -39,6 +39,7 @@ type NodeConf struct {
 
 type NetworkConf struct {
 	Management bool     `hcl:"management"`
+	VirtIO     bool     `hcl:"virtio"`
 	Links      []string `hcl:"links"`
 }
 
