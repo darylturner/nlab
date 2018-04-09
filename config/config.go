@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func parseConfig(cfgFile string) (*Topology, error) {
+func ParseConfig(cfgFile string) (*Topology, error) {
 	var config Topology
 	var cfgData []byte
 	var err error

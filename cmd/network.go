@@ -15,22 +15,8 @@
 package cmd
 
 import (
-	"crypto/sha256"
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
-
-func fixedLengthTap(link, node string) string {
-	// required as linux has a character limit on tap names,
-	// we need to be fairly sure of deriving a unique tap name
-	// to avoid name collisions.
-	hash := sha256.New()
-	hash.Write([]byte(link))
-	hash.Write([]byte(node))
-
-	return fmt.Sprintf("veth%.5x", hash.Sum(nil))
-}
 
 // networkCmd represents the network command
 var networkCmd = &cobra.Command{

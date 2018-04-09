@@ -116,18 +116,3 @@ func linkCmd(link, tap string, virtio bool) []string {
 		"-netdev", fmt.Sprintf("tap,id=%s,ifname=%s,script=no", link, tap),
 	}
 }
-
-func randomByte() int {
-	return rand.Intn(256)
-}
-
-func generateMAC() string {
-	baseMAC := "52:54:00"
-	rand.Seed(time.Now().UnixNano())
-	return fmt.Sprintf(
-		baseMAC+":%02x:%02x:%02x",
-		randomByte(),
-		randomByte(),
-		randomByte(),
-	)
-}
