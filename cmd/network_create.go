@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/darylturner/nlab/config"
-	"github.com/darylturner/nlab/network"
+	"github.com/darylturner/nlab/internal/config"
+	"github.com/darylturner/nlab/internal/network"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

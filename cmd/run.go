@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/darylturner/nlab/config"
-	"github.com/darylturner/nlab/node"
+	"github.com/darylturner/nlab/internal/config"
+	"github.com/darylturner/nlab/internal/node"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
