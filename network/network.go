@@ -16,10 +16,15 @@ type Network interface {
 	AddNode(string)
 }
 
-func GetMap(cfg config.Topology) (map[string]Network, error) {
+func GetMap(cfg *config.Topology) (map[string]Network, error) {
 	allLinks := make(map[string]Network)
 	os := runtime.GOOS
 	for _, nd := range cfg.Nodes {
+		if nd.Network.Management == true {
+			link := "_" + cfg.ManagementBridge
+			nd.Network.Links = append(nd.Network.Links, link)
+		}
+
 		for _, link := range nd.Network.Links {
 			if net, ok := allLinks[link]; ok {
 				net.AddNode(nd.Tag)

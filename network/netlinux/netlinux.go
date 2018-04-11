@@ -4,11 +4,12 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"os/exec"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func tapUID(link, node string) string {
+func TapUID(link, node string) string {
 	// required as linux has a character limit on tap names,
 	// we need to be fairly sure of deriving a unique tap name
 	// to avoid name collisions.
@@ -35,13 +36,21 @@ func (brTap *BridgeTapNetwork) AddNode(node string) {
 }
 
 func (brTap BridgeTapNetwork) Create() error {
-	if err := createBridge(brTap.Tag); err != nil {
-		return err
+	tag := brTap.Tag
+
+	// if bridge is prefixed with _ skip the create and strip
+	// the prefix
+	if !strings.HasPrefix(tag, "_") {
+		if err := createBridge(tag); err != nil {
+			return err
+		}
+	} else {
+		tag = strings.TrimLeft(tag, "_")
 	}
 
 	for _, node := range brTap.NodesJoined {
-		tapName := tapUID(brTap.Tag, node)
-		if err := createTap(tapName, brTap.Tag); err != nil {
+		tapName := TapUID(brTap.Tag, node)
+		if err := createTap(tapName, tag); err != nil {
 			return err
 		}
 	}
@@ -50,12 +59,20 @@ func (brTap BridgeTapNetwork) Create() error {
 }
 
 func (brTap BridgeTapNetwork) Destroy() error {
-	if err := destroyBridge(brTap.Tag); err != nil {
-		return err
+	tag := brTap.Tag
+
+	// if bridge is prefixed with _ skip the destroy and strip
+	// the prefix
+	if !strings.HasPrefix(tag, "_") {
+		if err := destroyBridge(tag); err != nil {
+			return err
+		}
+	} else {
+		tag = strings.TrimLeft(tag, "_")
 	}
 
 	for _, node := range brTap.NodesJoined {
-		tapName := tapUID(brTap.Tag, node)
+		tapName := TapUID(brTap.Tag, node)
 		if err := destroyTap(tapName); err != nil {
 			return err
 		}

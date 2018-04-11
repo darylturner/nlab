@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os/exec"
-
 	"github.com/darylturner/nlab/config"
 	"github.com/darylturner/nlab/network"
 	log "github.com/sirupsen/logrus"
@@ -15,7 +12,7 @@ var createCmd = &cobra.Command{
 	Use:   "create <config.yml>",
 	Short: "Create Linux bridge/taps",
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := config.ParseConfig(args[0])
+		cfg, err := config.Parse(args[0])
 		if err != nil {
 			log.WithFields(log.Fields{
 				"config": args[0],

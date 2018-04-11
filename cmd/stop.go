@@ -1,26 +1,8 @@
-// Copyright © 2018 Daryl Turner <daryl@layer-eight.uk>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"strconv"
-	"strings"
-
+	"github.com/darylturner/nlab/config"
+	"github.com/darylturner/nlab/node"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -29,7 +11,7 @@ var stopCmd = &cobra.Command{
 	Use:   "stop <config.yml>",
 	Short: "Stop virtual machines",
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := parseConfig(args[0])
+		cfg, err := config.Parse(args[0])
 		if err != nil {
 			log.WithFields(log.Fields{
 				"config": args[0],
@@ -37,45 +19,27 @@ var stopCmd = &cobra.Command{
 			}).Fatal("error parsing configuration")
 		}
 
-		pidPath := fmt.Sprintf("/var/run/nlab/%v/", cfg.Tag)
-
-		specifiedTag := cmd.Flag("tag").Value.String()
-		for _, node := range cfg.Nodes {
-			if specifiedTag == "" || specifiedTag == node.Tag {
-				pidBytes, err := ioutil.ReadFile(pidPath + fmt.Sprintf("%v.pid", node.Tag))
+		tag := cmd.Flag("tag").Value.String()
+		if err != nil {
+			panic(err)
+		}
+		for _, ndConf := range cfg.Nodes {
+			if tag == ndConf.Tag || tag == "" {
+				nd, err := node.New(ndConf)
 				if err != nil {
 					log.WithFields(log.Fields{
-						"error":    err,
-						"tag":      node.Tag,
-						"pid_path": pidPath,
-					}).Error("unable to read pid")
+						"tag": ndConf.Tag,
+						"err": err,
+					}).Error("error creating node object")
 					continue
 				}
 
-				pidString := strings.TrimSpace(string(pidBytes))
-				pid, err := strconv.Atoi(pidString)
-				if err != nil {
-					panic(err)
-				}
-
-				proc, err := os.FindProcess(pid)
-				if err != nil {
+				if err := nd.Stop(cfg); err != nil {
 					log.WithFields(log.Fields{
-						"error": err,
-						"tag":   node.Tag,
-					}).Error("unable to find process")
+						"tag": ndConf.Tag,
+						"err": err,
+					}).Error("node stop failed")
 					continue
-				}
-
-				if err := proc.Kill(); err != nil {
-					log.WithFields(log.Fields{
-						"error": err,
-						"tag":   node.Tag,
-					}).Error("unable to kill process")
-				} else {
-					log.WithFields(log.Fields{
-						"tag": node.Tag,
-					}).Info("node stopped")
 				}
 			}
 		}
