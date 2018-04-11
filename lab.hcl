@@ -43,9 +43,3 @@ node "rtr2" {
     }
   }
 }
-
-link_tags = [
-  "rtr1-rtr2",
-  "rtr1-sw1",
-  "rtr1-sw2",
-]

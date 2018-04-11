@@ -27,7 +27,6 @@ func Parse(cfgFile string) (*Topology, error) {
 type Topology struct {
 	Tag              string     `hcl:"tag"`
 	Nodes            []NodeConf `hcl:"node"`
-	Links            []string   `hcl:"link_tags"`
 	ManagementBridge string     `hcl:"management_bridge"`
 }
 
