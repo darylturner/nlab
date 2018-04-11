@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Long: `nlab can be used to create Linux bridges and taps to
 simulate complicated network topologies and launch KVM
 virtual-machines with sane defaults.`,
-	Version: "0.5.0",
+	Version: "0.6.0",
 }
 
 func Execute() {
