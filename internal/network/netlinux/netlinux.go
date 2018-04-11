@@ -49,7 +49,7 @@ func (brTap BridgeTapNetwork) Create() error {
 	}
 
 	for _, node := range brTap.NodesJoined {
-		tapName := TapUID(brTap.Tag, node)
+		tapName := TapUID(tag, node)
 		if err := createTap(tapName, tag); err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ func (brTap BridgeTapNetwork) Destroy() error {
 	}
 
 	for _, node := range brTap.NodesJoined {
-		tapName := TapUID(brTap.Tag, node)
+		tapName := TapUID(tag, node)
 		if err := destroyTap(tapName); err != nil {
 			return err
 		}

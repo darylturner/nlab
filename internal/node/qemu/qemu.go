@@ -53,7 +53,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool) error {
 
 	virtIO := q.Network.VirtIO // virtio support specified?
 	if q.Network.Management == true {
-		tapName := netlinux.TapUID("management", q.Tag)
+		tapName := netlinux.TapUID(cfg.ManagementBridge, q.Tag)
 		qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName, virtIO)...)
 	}
 	for _, link := range q.Network.Links {
