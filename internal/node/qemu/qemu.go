@@ -36,9 +36,9 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool) error {
 
 	qemuArgs := []string{
 		"-name", q.Tag, "-daemonize",
-		"-smp", q.Resources.CPU,
+		"-smp", strconv.Itoa(q.Resources.CPU),
 		"-pidfile", fmt.Sprintf("/var/run/nlab/%v/%v.pid", cfg.Tag, q.Tag),
-		"-m", q.Resources.Memory,
+		"-m", strconv.Itoa(q.Resources.Memory),
 		"-display", "none", "-serial", fmt.Sprintf("telnet::%v,nowait,server", telnetPort),
 	}
 
