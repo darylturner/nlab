@@ -9,7 +9,7 @@ import (
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
-	Use:   "create <config.yml>",
+	Use:   "create <config.json>",
 	Short: "Create Linux bridge/taps",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Parse(args[0])

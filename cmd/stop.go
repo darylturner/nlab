@@ -8,7 +8,7 @@ import (
 )
 
 var stopCmd = &cobra.Command{
-	Use:   "stop <config.yml>",
+	Use:   "stop <config.json>",
 	Short: "Stop virtual machines",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Parse(args[0])

@@ -9,7 +9,7 @@ import (
 
 // destroyCmd represents the destroy command
 var destroyCmd = &cobra.Command{
-	Use:   "destroy <config.yml>",
+	Use:   "destroy <config.json>",
 	Short: "Destroy Linux bridge/taps",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Parse(args[0])

@@ -13,7 +13,7 @@ import (
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run <config.yml>",
+	Use:   "run <config.json>",
 	Short: "Run virtual machines",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Parse(args[0])
