@@ -23,8 +23,12 @@ Flags:
 Use "nlab [command] --help" for more information about a command.
 ```
 
+Configuration format is in JSON as a lingua franca. Config can be read
+in through STDIN so anything that compiles to JSON should be fine to use.
 ```
-# nlab network create lab.yml
-# nlab run lab.yml
-# nlab network destroy lab.yml
+# nlab network create lab.json
+# nlab run lab.json
+# nlab network destroy lab.json
+or
+# convert2json lab.toml | nlab create -
 ```
