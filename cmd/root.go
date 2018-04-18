@@ -19,6 +19,7 @@ simulate complicated network topologies and launch KVM
 virtual-machines with sane defaults.`,
 	Version: "0.8.0",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		log.SetOutput(os.Stdout)
 		if jsonOut == true {
 			log.SetFormatter(&log.JSONFormatter{})
 		}
