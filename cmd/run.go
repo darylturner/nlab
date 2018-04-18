@@ -61,7 +61,9 @@ var runCmd = &cobra.Command{
 				if status != nil {
 					log.WithFields(status).Info("running")
 				} else {
-					log.WithFields(log.Fields{"tag": ndConf.Tag}).Info("running")
+					if !dryRun {
+						log.WithFields(log.Fields{"tag": ndConf.Tag}).Info("running")
+					}
 				}
 			}
 		}
