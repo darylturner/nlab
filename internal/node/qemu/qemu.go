@@ -12,7 +12,7 @@ import (
 	"github.com/darylturner/nlab/internal/config"
 	"github.com/darylturner/nlab/internal/network"
 	"github.com/darylturner/nlab/internal/network/netlinux"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 func New(cfg config.NodeConf) *QemuNode {
@@ -23,7 +23,7 @@ type QemuNode struct {
 	config.NodeConf
 }
 
-func (q QemuNode) Run(cfg *config.Topology, dryRun bool) error {
+func (q QemuNode) Run(cfg *config.Topology, dryRun bool) (logrus.Fields, error) {
 	var index int // need to find which node we are within the topology
 	for i, nd := range cfg.Nodes {
 		if nd.Tag == q.Tag {
@@ -63,18 +63,17 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool) error {
 
 	if !dryRun {
 		if out, err := exec.Command("kvm", qemuArgs...).CombinedOutput(); err != nil {
-			return errors.New(fmt.Sprintf("%v: %v", err, string(out)))
+			return nil, errors.New(fmt.Sprintf("%v: %v", err, string(out)))
 		} else {
-			log.WithFields(log.Fields{
+			return logrus.Fields{
 				"tag":    q.Tag,
 				"serial": fmt.Sprintf("telnet://localhost:%v", telnetPort),
-			}).Info("running")
+			}, nil
 		}
 	} else {
 		fmt.Println("kvm " + strings.Join(qemuArgs, " "))
+		return nil, nil
 	}
-
-	return nil
 }
 
 func (q QemuNode) Stop(cfg *config.Topology) error {
@@ -98,10 +97,6 @@ func (q QemuNode) Stop(cfg *config.Topology) error {
 
 	if err := proc.Kill(); err != nil {
 		return err
-	} else {
-		log.WithFields(log.Fields{
-			"tag": q.Tag,
-		}).Info("node stopped")
 	}
 
 	return nil

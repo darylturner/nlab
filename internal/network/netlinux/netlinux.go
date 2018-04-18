@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
 func TapUID(link, node string) string {
@@ -82,11 +80,6 @@ func (brTap BridgeTapNetwork) Destroy() error {
 }
 
 func createTap(name, bridge string) error {
-	contextLog := log.WithFields(log.Fields{
-		"tap": name, "bridge": bridge,
-	})
-
-	contextLog.Info("creating tap")
 	if err := exec.Command("ip", "tuntap", "add", "dev", name, "mode", "tap").Run(); err != nil {
 		return err
 	}
@@ -101,11 +94,6 @@ func createTap(name, bridge string) error {
 }
 
 func createBridge(name string) error {
-	contextLog := log.WithFields(log.Fields{
-		"bridge": name,
-	})
-
-	contextLog.Info("creating bridge")
 	if err := exec.Command("ip", "link", "add", name, "type", "bridge").Run(); err != nil {
 		return err
 	}
@@ -117,11 +105,6 @@ func createBridge(name string) error {
 }
 
 func destroyTap(name string) error {
-	contextLog := log.WithFields(log.Fields{
-		"tap": name,
-	})
-
-	contextLog.Info("destroying tap")
 	if err := exec.Command("ip", "link", "delete", name).Run(); err != nil {
 		return err
 	}
@@ -130,11 +113,6 @@ func destroyTap(name string) error {
 }
 
 func destroyBridge(name string) error {
-	contextLog := log.WithFields(log.Fields{
-		"bridge": name,
-	})
-
-	contextLog.Info("destroying bridge")
 	if err := exec.Command("ip", "link", "delete", name, "type", "bridge").Run(); err != nil {
 		return err
 	}

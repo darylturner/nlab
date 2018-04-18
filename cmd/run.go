@@ -31,11 +31,13 @@ var runCmd = &cobra.Command{
 		}
 
 		tag := cmd.Flag("tag").Value.String()
-		noLaunch := cmd.Flag("no-launch").Value.String()
-		dryRun, err := strconv.ParseBool(noLaunch)
+		nlFlag := cmd.Flag("no-launch").Value.String()
+
+		dryRun, err := strconv.ParseBool(nlFlag)
 		if err != nil {
 			panic(err)
 		}
+
 		for _, ndConf := range cfg.Nodes {
 			if tag == ndConf.Tag || tag == "" {
 				nd, err := node.New(ndConf)
@@ -47,12 +49,19 @@ var runCmd = &cobra.Command{
 					continue
 				}
 
-				if err := nd.Run(cfg, dryRun); err != nil {
+				status, err := nd.Run(cfg, dryRun)
+				if err != nil {
 					log.WithFields(log.Fields{
 						"tag": ndConf.Tag,
 						"err": err,
 					}).Error("node run failed")
 					continue
+				}
+
+				if status != nil {
+					log.WithFields(status).Info("running")
+				} else {
+					log.WithFields(log.Fields{"tag": ndConf.Tag}).Info("running")
 				}
 			}
 		}
