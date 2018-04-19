@@ -27,7 +27,7 @@ virtual-machines with sane defaults.`,
 }
 
 func Execute() {
-	rootCmd.PersistentFlags().BoolVarP(&jsonOut, "json", "j", false, "Output formatted as JSON to ")
+	rootCmd.PersistentFlags().BoolVarP(&jsonOut, "json", "j", false, "Output formatted as JSON to stdout")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
