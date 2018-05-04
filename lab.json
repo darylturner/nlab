@@ -38,7 +38,11 @@
     },
     {
       "tag": "vmx-peer1",
-      "links": [ "vmx_peer-1" ],
+      "network": {
+          "links": [ "vmx_peer-1" ],
+          "management": true,
+          "virtio": false
+      },
       "resources": {
         "cpu": 1,
         "mem": 512,
