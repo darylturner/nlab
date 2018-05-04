@@ -1,38 +1,52 @@
 {
-    "management_bridge": "man0",
-    "tag": "example-lab",
-    "nodes": [
-        {
-            "tag": "rtr1",
-            "network": {
-                "management": true,
-                "virtio": true,
-                "links": [ "rtr-1", "rtr-2" ]
-            },
-            "resources": {
-                "cpu": 2,
-                "mem": 512,
-                "disks": [
-                    { "file": "/dev/zvol/tank/vmdisks/vsrx-1", "format": "raw" },
-                    { "file": "/dev/zvol/tank/vmdisks/vsrx-2", "format": "raw" }
-                ]
-            }
-        },
-        {
-            "tag": "rtr2",
-            "network": {
-                "management": true,
-                "virtio": true,
-                "links": [ "rtr-1", "rtr-2" ]
-            },
-            "resources": {
-                "cpu": 2,
-                "mem": 512,
-                "disks": [
-                    { "file": "/dev/zvol/tank/vmdisks/vsrx-1", "format": "raw" },
-                    { "file": "/dev/zvol/tank/vmdisks/vsrx-2", "format": "raw" }
-                ]
-            }
-        }
-    ]
+  "management_bridge": "man0",
+  "tag": "vmx",
+  "nodes": [
+    {
+      "tag": "vmx0-re",
+      "network": {
+          "links": [ "re-pfe" ],
+          "management": true,
+          "virtio": false
+      },
+      "resources": {
+        "cpu": 1,
+        "mem": 1024,
+        "cdrom": null,
+        "disks": [
+          { "file": "/dev/zvol/tank/vmdisks/vmx-junos-1", "format": "raw" },
+          { "file": "/dev/zvol/tank/vmdisks/vmx-hdd-1", "format": "raw" },
+          { "file": "/dev/zvol/tank/vmdisks/vmx-metadata-re-1", "format": "raw" }
+        ]
+      }
+    },
+    {
+      "tag": "vmx0-cp",
+      "network": {
+          "links": [ "re-pfe", "vmx_peer-1" ],
+          "management": true,
+          "virtio": true
+      },
+      "resources": {
+        "cpu": 3,
+        "mem": 4096,
+        "cdrom": null,
+        "disks": [
+          { "file": "/dev/zvol/tank/vmdisks/vmx-fpc-1", "format": "raw" }
+        ]
+      }
+    },
+    {
+      "tag": "vmx-peer1",
+      "links": [ "vmx_peer-1" ],
+      "resources": {
+        "cpu": 1,
+        "mem": 512,
+        "cdrom": null,
+        "disks": [
+          { "file": "/dev/zvol/tank/vmdisks/cumulus-2", "format": "raw" }
+        ]
+      }
+    }
+  ]
 }
