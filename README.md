@@ -33,5 +33,5 @@ in through STDIN so anything that compiles to JSON should be fine to use.
 {"level":"info","msg":"running","serial":"telnet://localhost:50002","tag":"vmx-peer1","time":"2018-05-04T11:43:11+01:00"}
 # nlab network destroy lab.json
 or
-# convert2json lab.toml | nlab create -
+# convert2json lab.toml | nlab network create -
 ```
