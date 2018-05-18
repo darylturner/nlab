@@ -16,6 +16,12 @@ type Network interface {
 	AddNode(string)
 }
 
+type PseudoWire struct {
+	Type     string
+	Init     bool
+	BasePort int
+}
+
 func GetMap(cfg *config.Topology) (map[string]Network, error) {
 	allLinks := make(map[string]Network)
 	os := runtime.GOOS
@@ -39,6 +45,34 @@ func GetMap(cfg *config.Topology) (map[string]Network, error) {
 			default:
 				return allLinks, errors.New("running on unsupported os")
 			}
+		}
+	}
+
+	return allLinks, nil
+}
+
+func GetPseudoWireMap(cfg *config.Topology) (map[string]*PseudoWire, error) {
+	allLinks := make(map[string]*PseudoWire)
+	portBase := 30000
+	os := runtime.GOOS
+	for _, nd := range cfg.Nodes {
+		for _, link := range nd.Network.Links {
+			if _, ok := allLinks[link]; ok {
+				continue
+			}
+
+			switch os {
+			case "linux":
+				allLinks[link] = &PseudoWire{
+					Type:     "qemu-unicast-udp",
+					Init:     false,
+					BasePort: portBase,
+				}
+			default:
+				return allLinks, errors.New("running on unsupported os")
+			}
+
+			portBase += 2
 		}
 	}
 
