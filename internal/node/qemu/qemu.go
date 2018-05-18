@@ -58,7 +58,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 	}
 	for _, link := range q.Network.Links {
 		if cfg.PseudoWire {
-			qemuArgs = append(qemuArgs, pwCmd(link, pwMap[link], virtIO)...)
+			qemuArgs = append(qemuArgs, pwCmd(link, pwMap[link], q.Tag, virtIO)...)
 		} else {
 			tapName := netlinux.TapUID(link, q.Tag)
 			qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
@@ -106,20 +106,28 @@ func (q QemuNode) Stop(cfg *config.Topology) error {
 	return nil
 }
 
-func pwCmd(link string, pw *network.PseudoWire, virtio bool) []string {
+func pwCmd(link string, pw *network.PseudoWire, tag string, virtio bool) []string {
 	drv := "e1000"
 	if virtio {
 		drv = "virtio-net-pci"
 	}
 
+	// use the node's position in the array to work out who
+	// should get the lower port number
+	var pos int
+	for i, t := range pw.Nodes {
+		if t == tag {
+			pos = i
+		}
+	}
+
 	var local, remote int
-	if pw.Initialised {
-		remote = pw.Port
+	if pos == 1 {
 		local = pw.Port + 1
+		remote = pw.Port
 	} else {
-		remote = pw.Port + 1
 		local = pw.Port
-		pw.Initialised = true
+		remote = pw.Port + 1
 	}
 
 	return []string{
