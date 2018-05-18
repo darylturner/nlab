@@ -16,29 +16,74 @@ type Network interface {
 	AddNode(string)
 }
 
+type PseudoWire struct {
+	Type        string
+	Initialised bool
+	Port        int
+}
+
+func newNet(link string, nd config.NodeConf, allLinks map[string]Network) error {
+	if net, ok := allLinks[link]; ok {
+		net.AddNode(nd.Tag)
+		return nil
+	}
+
+	switch runtime.GOOS {
+	case "linux":
+		net := netlinux.New(link)
+		net.AddNode(nd.Tag)
+		allLinks[link] = &net
+	default:
+		return errors.New("running on unsupported os")
+	}
+
+	return nil
+}
+
 func GetMap(cfg *config.Topology) (map[string]Network, error) {
 	allLinks := make(map[string]Network)
-	os := runtime.GOOS
 	for _, nd := range cfg.Nodes {
 		if nd.Network.Management == true {
 			link := "_" + cfg.ManagementBridge
-			nd.Network.Links = append(nd.Network.Links, link)
+			if err := newNet(link, nd, allLinks); err != nil {
+				return allLinks, err
+			}
 		}
 
+		if !cfg.PseudoWire {
+			for _, link := range nd.Network.Links {
+				if err := newNet(link, nd, allLinks); err != nil {
+					return allLinks, err
+				}
+			}
+		}
+	}
+
+	return allLinks, nil
+}
+
+func GetPseudoWireMap(cfg *config.Topology) (map[string]*PseudoWire, error) {
+	allLinks := make(map[string]*PseudoWire)
+	portBase := 30000
+	os := runtime.GOOS
+	for _, nd := range cfg.Nodes {
 		for _, link := range nd.Network.Links {
-			if net, ok := allLinks[link]; ok {
-				net.AddNode(nd.Tag)
+			if _, ok := allLinks[link]; ok {
 				continue
 			}
 
 			switch os {
 			case "linux":
-				net := netlinux.New(link)
-				net.AddNode(nd.Tag)
-				allLinks[link] = &net
+				allLinks[link] = &PseudoWire{
+					Type:        "qemu-unicast-udp",
+					Initialised: false,
+					Port:        portBase,
+				}
 			default:
 				return allLinks, errors.New("running on unsupported os")
 			}
+
+			portBase += 2
 		}
 	}
 

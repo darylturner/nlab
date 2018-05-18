@@ -23,7 +23,7 @@ type QemuNode struct {
 	config.NodeConf
 }
 
-func (q QemuNode) Run(cfg *config.Topology, dryRun bool) (logrus.Fields, error) {
+func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*network.PseudoWire) (logrus.Fields, error) {
 	var index int // need to find which node we are within the topology
 	for i, nd := range cfg.Nodes {
 		if nd.Tag == q.Tag {
@@ -31,7 +31,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool) (logrus.Fields, error) 
 		}
 	}
 
-	serialPortBase := 50000 // need to make this more dynamic
+	serialPortBase := 40000 // need to make this more dynamic
 	telnetPort := serialPortBase + index
 
 	qemuArgs := []string{
@@ -57,8 +57,12 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool) (logrus.Fields, error) 
 		qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName, virtIO)...)
 	}
 	for _, link := range q.Network.Links {
-		tapName := netlinux.TapUID(link, q.Tag)
-		qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
+		if cfg.PseudoWire {
+			qemuArgs = append(qemuArgs, pwCmd(link, pwMap[link], virtIO)...)
+		} else {
+			tapName := netlinux.TapUID(link, q.Tag)
+			qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
+		}
 	}
 
 	if !dryRun {
@@ -100,6 +104,28 @@ func (q QemuNode) Stop(cfg *config.Topology) error {
 	}
 
 	return nil
+}
+
+func pwCmd(link string, pw *network.PseudoWire, virtio bool) []string {
+	drv := "e1000"
+	if virtio {
+		drv = "virtio-net-pci"
+	}
+
+	var local, remote int
+	if pw.Initialised {
+		remote = pw.Port
+		local = pw.Port + 1
+	} else {
+		remote = pw.Port + 1
+		local = pw.Port
+		pw.Initialised = true
+	}
+
+	return []string{
+		"-device", fmt.Sprintf("%v,netdev=%s,mac=%s", drv, link, network.RandomMAC()),
+		"-netdev", fmt.Sprintf("socket,id=%s,udp=127.0.0.1:%d,localaddr=127.0.0.1:%d", link, remote, local),
+	}
 }
 
 func linkCmd(link, tap string, virtio bool) []string {
