@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/darylturner/nlab/internal/config"
+	"github.com/darylturner/nlab/internal/network"
 	"github.com/darylturner/nlab/internal/node"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -38,6 +39,14 @@ var runCmd = &cobra.Command{
 			panic(err)
 		}
 
+		pwMap := make(map[string]*network.PseudoWire)
+		if cfg.PseudoWire {
+			pwMap, err = network.GetPseudoWireMap(cfg)
+			if err != nil {
+				log.Fatal("error creating pseudowire map")
+			}
+		}
+
 		for _, ndConf := range cfg.Nodes {
 			if tag == ndConf.Tag || tag == "" {
 				nd, err := node.New(ndConf)
@@ -49,7 +58,7 @@ var runCmd = &cobra.Command{
 					continue
 				}
 
-				status, err := nd.Run(cfg, dryRun)
+				status, err := nd.Run(cfg, dryRun, pwMap)
 				if err != nil {
 					log.WithFields(log.Fields{
 						"tag": ndConf.Tag,

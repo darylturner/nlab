@@ -3,6 +3,7 @@ package node
 import (
 	"errors"
 	"github.com/darylturner/nlab/internal/config"
+	"github.com/darylturner/nlab/internal/network"
 	"github.com/darylturner/nlab/internal/node/qemu"
 	"github.com/sirupsen/logrus"
 	"runtime"
@@ -20,6 +21,6 @@ func New(cfg config.NodeConf) (Node, error) {
 }
 
 type Node interface {
-	Run(*config.Topology, bool) (logrus.Fields, error)
+	Run(*config.Topology, bool, map[string]*network.PseudoWire) (logrus.Fields, error)
 	Stop(*config.Topology) error
 }
