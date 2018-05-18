@@ -17,9 +17,9 @@ type Network interface {
 }
 
 type PseudoWire struct {
-	Type     string
-	Init     bool
-	BasePort int
+	Type        string
+	Initialised bool
+	Port        int
 }
 
 func newNet(link string, nd config.NodeConf, allLinks map[string]Network) error {
@@ -45,7 +45,6 @@ func GetMap(cfg *config.Topology) (map[string]Network, error) {
 	for _, nd := range cfg.Nodes {
 		if nd.Network.Management == true {
 			link := "_" + cfg.ManagementBridge
-			nd.Network.Links = append(nd.Network.Links, link)
 			if err := newNet(link, nd, allLinks); err != nil {
 				return allLinks, err
 			}
@@ -76,9 +75,9 @@ func GetPseudoWireMap(cfg *config.Topology) (map[string]*PseudoWire, error) {
 			switch os {
 			case "linux":
 				allLinks[link] = &PseudoWire{
-					Type:     "qemu-unicast-udp",
-					Init:     false,
-					BasePort: portBase,
+					Type:        "qemu-unicast-udp",
+					Initialised: false,
+					Port:        portBase,
 				}
 			default:
 				return allLinks, errors.New("running on unsupported os")

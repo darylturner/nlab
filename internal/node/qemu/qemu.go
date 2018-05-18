@@ -31,7 +31,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 		}
 	}
 
-	serialPortBase := 50000 // need to make this more dynamic
+	serialPortBase := 40000 // need to make this more dynamic
 	telnetPort := serialPortBase + index
 
 	qemuArgs := []string{
@@ -113,13 +113,13 @@ func pwCmd(link string, pw *network.PseudoWire, virtio bool) []string {
 	}
 
 	var local, remote int
-	if pw.Init {
-		remote = pw.BasePort
-		local = pw.BasePort + 1
+	if pw.Initialised {
+		remote = pw.Port
+		local = pw.Port + 1
 	} else {
-		remote = pw.BasePort + 1
-		local = pw.BasePort
-		pw.Init = true
+		remote = pw.Port + 1
+		local = pw.Port
+		pw.Initialised = true
 	}
 
 	return []string{
