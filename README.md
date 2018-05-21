@@ -5,8 +5,8 @@ CLI tool for managing Linux/KVM based network labs.
 
 ```
 # nlab --help
-nlab can be used to create to simulate complicated network
-topologies and launch KVM virtual-machines with sane defaults.
+nlab can be used to create complicated network topologies
+and launch KVM virtual-machines with sane defaults.
 Tap/bridge and UDP pseudo-wire topologies supported.
 
 Usage:
