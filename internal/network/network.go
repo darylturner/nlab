@@ -50,7 +50,7 @@ func GetMap(cfg *config.Topology) (map[string]Network, error) {
 			}
 		}
 
-		if !cfg.PseudoWire {
+		if cfg.NetMode != "pseudowire" {
 			for _, link := range nd.Network.Links {
 				if err := newNet(link, nd, allLinks); err != nil {
 					return allLinks, err

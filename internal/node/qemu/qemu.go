@@ -57,11 +57,14 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 		qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName, virtIO)...)
 	}
 	for _, link := range q.Network.Links {
-		if cfg.PseudoWire {
+		switch cfg.NetMode {
+		case "pseudowire":
 			qemuArgs = append(qemuArgs, pwCmd(link, pwMap[link], q.Tag, virtIO)...)
-		} else {
+		case "tap-bridge":
 			tapName := netlinux.TapUID(link, q.Tag)
 			qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
+		default:
+			return nil, fmt.Errorf("%v network mode is not supported", cfg.NetMode)
 		}
 	}
 

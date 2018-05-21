@@ -25,6 +25,11 @@ var runCmd = &cobra.Command{
 			}).Fatal("error parsing configuration")
 		}
 
+		// set default network mode.
+		if cfg.NetMode == "" {
+			cfg.NetMode = "tap-bridge"
+		}
+
 		if err := os.MkdirAll(fmt.Sprintf("/var/run/nlab/%v", cfg.Tag), os.ModePerm); err != nil {
 			log.WithFields(log.Fields{
 				"error": err,
@@ -39,8 +44,8 @@ var runCmd = &cobra.Command{
 			panic(err)
 		}
 
-		pwMap := make(map[string]*network.PseudoWire)
-		if cfg.PseudoWire {
+		var pwMap map[string]*network.PseudoWire
+		if cfg.NetMode == "pseudowire" {
 			pwMap, err = network.GetPseudoWireMap(cfg)
 			if err != nil {
 				log.Fatal("error creating pseudowire map")
