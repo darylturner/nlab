@@ -1,6 +1,7 @@
 {
   "management_bridge": "man0",
   "tag": "vmx",
+  "lab_id": 0,
   "pseudo_wire": false,
   "nodes": [
     {

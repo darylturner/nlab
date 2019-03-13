@@ -29,6 +29,7 @@ type Topology struct {
 	Nodes            []NodeConf `json:"nodes"`
 	ManagementBridge string     `json:"management_bridge"`
 	PseudoWire       bool       `json:"pseudo_wire"`
+	LabID            int        `json:"lab_id"`
 }
 
 type NodeConf struct {

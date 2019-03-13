@@ -63,7 +63,7 @@ func GetMap(cfg *config.Topology) (map[string]Network, error) {
 
 func GetPseudoWireMap(cfg *config.Topology) (map[string]*PseudoWire, error) {
 	allLinks := make(map[string]*PseudoWire)
-	portBase := 30000
+	portBase := 32768 + (cfg.LabID * 1024)
 	os := runtime.GOOS
 	for _, nd := range cfg.Nodes {
 		for _, link := range nd.Network.Links {

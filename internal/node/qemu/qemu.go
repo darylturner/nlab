@@ -31,7 +31,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 		}
 	}
 
-	serialPortBase := 40000 // need to make this more dynamic
+	serialPortBase := 49152 + (cfg.LabID * 32)
 	telnetPort := serialPortBase + index
 
 	qemuArgs := []string{
