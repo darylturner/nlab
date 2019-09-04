@@ -35,9 +35,11 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 	telnetPort := serialPortBase + index
 
 	qemuArgs := []string{
+		"--enable-kvm",
 		"-name", q.Tag, "-daemonize",
 		"-smp", strconv.Itoa(q.Resources.CPU),
 		"-pidfile", fmt.Sprintf("/var/run/nlab/%v/%v.pid", cfg.Tag, q.Tag),
+		"-monitor", fmt.Sprintf("unix:/var/run/nlab/%v/%v.sock,nowait,server", cfg.Tag, q.Tag),
 		"-m", strconv.Itoa(q.Resources.Memory),
 		"-display", "none", "-serial", fmt.Sprintf("telnet::%v,nowait,server", telnetPort),
 	}
@@ -66,7 +68,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 	}
 
 	if !dryRun {
-		if out, err := exec.Command("kvm", qemuArgs...).CombinedOutput(); err != nil {
+		if out, err := exec.Command("qemu-system-x86_64", qemuArgs...).CombinedOutput(); err != nil {
 			return nil, errors.New(fmt.Sprintf("%v: %v", err, string(out)))
 		} else {
 			return logrus.Fields{
