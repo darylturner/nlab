@@ -77,7 +77,7 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 			}, nil
 		}
 	} else {
-		fmt.Println("kvm " + strings.Join(qemuArgs, " "))
+		fmt.Println("qemu-system-x86_64 " + strings.Join(qemuArgs, " "))
 		return nil, nil
 	}
 }
