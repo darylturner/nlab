@@ -11,10 +11,16 @@ var stopCmd = &cobra.Command{
 	Use:   "stop <config.json>",
 	Short: "Stop virtual machines",
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := config.Parse(args[0])
+		var conf string
+		if len(args) > 0 {
+			conf = args[0]
+		} else {
+			conf = "-"
+		}
+		cfg, err := config.Parse(conf)
 		if err != nil {
 			log.WithFields(log.Fields{
-				"config": args[0],
+				"config": conf,
 				"error":  err,
 			}).Fatal("error parsing configuration")
 		}
@@ -44,7 +50,7 @@ var stopCmd = &cobra.Command{
 			}
 		}
 	},
-	Args: cobra.ExactArgs(1),
+	Args: cobra.MaximumNArgs(1),
 }
 
 func init() {

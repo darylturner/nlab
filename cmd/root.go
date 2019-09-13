@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 	Long: `nlab can be used to create complicated network topologies
 and launch KVM virtual-machines with sane defaults.
 Tap/bridge and UDP pseudo-wire topologies supported.`,
-	Version: "0.10.0",
+	Version: "0.11.0",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		log.SetOutput(os.Stdout)
 		if jsonOut == true {
