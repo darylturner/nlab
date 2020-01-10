@@ -55,14 +55,14 @@ func (q QemuNode) Run(cfg *config.Topology, dryRun bool, pwMap map[string]*netwo
 
 	virtIO := q.Network.VirtIO // virtio support specified?
 	if q.Network.Management == true {
-		tapName := netlinux.TapUID(cfg.ManagementBridge, q.Tag)
+		tapName := netlinux.TapUID(cfg.LabID, cfg.ManagementBridge, q.Tag)
 		qemuArgs = append(qemuArgs, linkCmd(cfg.ManagementBridge, tapName, virtIO)...)
 	}
 	for _, link := range q.Network.Links {
 		if cfg.PseudoWire {
 			qemuArgs = append(qemuArgs, pwCmd(link, pwMap[link], q.Tag, virtIO)...)
 		} else {
-			tapName := netlinux.TapUID(link, q.Tag)
+			tapName := netlinux.TapUID(cfg.LabID, link, q.Tag)
 			qemuArgs = append(qemuArgs, linkCmd(link, tapName, virtIO)...)
 		}
 	}

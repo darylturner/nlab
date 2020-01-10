@@ -22,7 +22,7 @@ type PseudoWire struct {
 	Nodes []string
 }
 
-func newNet(link string, nd config.NodeConf, allLinks map[string]Network) error {
+func newNet(link string, nd config.NodeConf, allLinks map[string]Network, labID int) error {
 	if net, ok := allLinks[link]; ok {
 		net.AddNode(nd.Tag)
 		return nil
@@ -30,7 +30,7 @@ func newNet(link string, nd config.NodeConf, allLinks map[string]Network) error 
 
 	switch runtime.GOOS {
 	case "linux":
-		net := netlinux.New(link)
+		net := netlinux.New(labID, link)
 		net.AddNode(nd.Tag)
 		allLinks[link] = &net
 	default:
@@ -45,14 +45,14 @@ func GetMap(cfg *config.Topology) (map[string]Network, error) {
 	for _, nd := range cfg.Nodes {
 		if nd.Network.Management == true {
 			link := "_" + cfg.ManagementBridge
-			if err := newNet(link, nd, allLinks); err != nil {
+			if err := newNet(link, nd, allLinks, cfg.LabID); err != nil {
 				return allLinks, err
 			}
 		}
 
 		if !cfg.PseudoWire {
 			for _, link := range nd.Network.Links {
-				if err := newNet(link, nd, allLinks); err != nil {
+				if err := newNet(link, nd, allLinks, cfg.LabID); err != nil {
 					return allLinks, err
 				}
 			}
